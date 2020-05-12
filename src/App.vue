@@ -1,10 +1,12 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">Home</router-link> 
+      <router-link :to="{path: '/startvm', params: {bisy: true}}">StartVM</router-link>
     </div>
-    <router-view/>
+    <div class="main">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -13,20 +15,32 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  // text-align: center;
   color: #2c3e50;
+  display: flex
 }
 
 #nav {
   padding: 30px;
+  // display: inline-block;
+  width: 200px;
+  border: 1px solid;
 
   a {
     font-weight: bold;
     color: #2c3e50;
+    display: block;
+    margin-bottom: 10px;
 
     &.router-link-exact-active {
       color: #42b983;
     }
   }
+}
+
+.main {
+  text-align: center;
+  border: 1px solid;
+  width: 100%;
 }
 </style>
