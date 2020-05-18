@@ -1,33 +1,32 @@
 <template>
   <div class="startvm">
-    <h2>This is a Start VM page</h2>
+    <h3>This is a Start VM page</h3>
     <div class="free" v-if="bisy">List of bisy machines</div>
     <div v-else>Вам повезло, все машины сейчас свободны</div>
-    <div>status: {{ bisy }}</div>
+    <br>
+    <p>Выберите свободную машину и снэпшот</p>
+    <!-- <div>status: {{ bisy }}</div> -->
     <div class="wrapper">
       <div class="lpanel">
+        <p class="headers">Virtual machines:</p>
         <div
           v-for="item in Object.keys(all_cfg)"
           :key="item"
           class="element"
           @change="clearSn"
         >
-          <label
-            ><input type="radio" :id="item" :value="item" v-model="picked" />
-            {{ item }}</label
-          >
+          <b-form-radio :id="item" :value="item" v-model="picked">{{ item }}</b-form-radio>
         </div>
       </div>
       <div class="rpanel">
+         <p class="headers">Snapshots:</p>
         <div v-for="item in snapList" :key="item" class="element">
-          <label
-            ><input type="radio" :id="item" :value="item" v-model="snapshot" />
-            {{ item }}</label
-          >
+           <b-form-radio :id="item" :value="item" v-model="snapshot"> {{ item }}</b-form-radio>
         </div>
       </div>
     </div>
     <div v-if="showRes">
+      <hr>
       Выбрана конфигурация:
       <span class="selected">{{ picked }} - {{ snapshot }}</span>
       <br><br>
@@ -78,12 +77,10 @@ export default {
 }
 .lpanel,
 .rpanel {
-  width: 250px;
-  /* height: 500px; */
-  background-color: lightgrey;
-  margin: 10px;
+  /* width: 250px; */
+  margin: 10px 40px 10px;
   text-align: left;
-  padding: 10px 0 0 30px;
+  padding: 10px 0 0 0px;
   font-weight: 500;
   font-size: 18px;
 }
@@ -96,6 +93,8 @@ export default {
 .selected {
   color: green;
   font-size: 20px;
- 
+}
+.headers {
+  text-decoration: underline;
 }
 </style>
