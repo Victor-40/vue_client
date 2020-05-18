@@ -31,8 +31,9 @@
       Выбрана конфигурация:
       <span class="selected">{{ picked }} - {{ snapshot }}</span>
       <br><br>
-      <button>Запустить</button>
+      <b-button variant="outline-primary">Запустить</b-button>
     </div>
+    
   </div>
 </template>
 
