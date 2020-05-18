@@ -6,13 +6,33 @@
     <div>status: {{ bisy }}</div>
     <div class="wrapper">
       <div class="lpanel">
-        <div v-for="item in Object.keys(all_cfg)" :key="item" class="element">
-          <label><input type="radio" :id="item" :value="item" v-model="picked"> {{ item }}</label>
+        <div
+          v-for="item in Object.keys(all_cfg)"
+          :key="item"
+          class="element"
+          @change="clearSn"
+        >
+          <label
+            ><input type="radio" :id="item" :value="item" v-model="picked" />
+            {{ item }}</label
+          >
         </div>
       </div>
-      <div class="rpanel"></div>
+      <div class="rpanel">
+        <div v-for="item in snapList" :key="item" class="element">
+          <label
+            ><input type="radio" :id="item" :value="item" v-model="snapshot" />
+            {{ item }}</label
+          >
+        </div>
+      </div>
     </div>
-    {{picked}}
+    <div v-if="showRes">
+      Выбрана конфигурация:
+      <span class="selected">{{ picked }} - {{ snapshot }}</span>
+      <br><br>
+      <button>Запустить</button>
+    </div>
   </div>
 </template>
 
@@ -22,14 +42,31 @@ export default {
   name: "startVM",
   data() {
     return {
-      all_cfg: {"windows 10 en": ["snap1", "snap2", "snap3"],
-                  "windows 10 ger": ["snap2", "snap3", "snap4", "snap5"],
-                  "windows 7 en": ["snap1", "snap3", "snap6"]},
-                  picked: '',
-    }
+      all_cfg: {
+        "windows 10 en": ["snap1", "snap2", "snap3"],
+        "windows 10 ger": ["snap2", "snap3", "snap4", "snap5"],
+        "windows 7 en": ["snap1", "snap3", "snap6"],
+      },
+      picked: "",
+      snaps: [],
+      snapshot: "",
+    };
   },
 
   props: { bisy: Boolean },
+  computed: {
+    snapList: function() {
+      return this.all_cfg[this.picked];
+    },
+    showRes: function() {
+      return this.picked && this.snapshot;
+    },
+  },
+  methods: {
+    clearSn() {
+      this.snapshot = "";
+    },
+  },
 };
 </script>
 
@@ -37,11 +74,11 @@ export default {
 .wrapper {
   display: flex;
   justify-content: center;
-  
 }
-.lpanel, .rpanel {
-  width: 300px;
-  height: 500px;
+.lpanel,
+.rpanel {
+  width: 250px;
+  /* height: 500px; */
   background-color: lightgrey;
   margin: 10px;
   text-align: left;
@@ -50,9 +87,14 @@ export default {
   font-size: 18px;
 }
 .element {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .lb {
   padding-left: 5px;
+}
+.selected {
+  color: green;
+  font-size: 20px;
+ 
 }
 </style>
