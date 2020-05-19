@@ -14,7 +14,6 @@
       <div class="lpanel">
         <p class="headers">Virtual machines:</p>
         <div
-          
           v-for="item in free_cfg"
           :key="item"
           class="element"

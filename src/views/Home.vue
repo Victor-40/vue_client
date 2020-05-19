@@ -16,3 +16,12 @@ export default {
   }
 }
 </script>
+
+<style>
+.home {
+  background-image: url("./bugs.jpg");
+  height: 100vh;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+</style>

@@ -1,32 +1,33 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    
+    <div class="container">
+      <h1>{{msg}}</h1>
    
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   props: {
-    msg: String
-  }
-}
+    msg: String,
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style scoped>
+.mem {
+  /* color: white; */
+  font-size: 48px;
+}
+.container {
+  width: 90wh;
+  color: aquamarine;
+  padding-left: 0;
+  margin: auto;
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+  height: 100vh;
 }
 </style>

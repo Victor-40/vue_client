@@ -24,7 +24,9 @@
   padding: 30px;
   // display: inline-block;
   width: 200px;
-  border: 1px solid;
+  background-color: #e7faf3;
+  height: 200px;
+  // border: 1px solid;
 
   a {
     font-weight: bold;
@@ -40,7 +42,7 @@
 
 .main {
   text-align: center;
-  border: 1px solid;
+  // border: 1px solid;
   width: 100%;
 }
 </style>
