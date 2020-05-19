@@ -1,11 +1,15 @@
 <template>
   <div class="startvm">
     <h3>This is a Start VM page</h3>
-    <div class="free" v-if="bisy">List of bisy machines</div>
+    <div class="free" v-if="busy">
+      <p>Занятые машины:</p>
+    <ul class="busy">
+      <li v-for="item in busy_cfg" :key="item">{{item}}</li>
+    </ul>
+     </div>
     <div v-else>Вам повезло, все машины сейчас свободны</div>
     <br />
     <p>Выберите свободную машину и снэпшот</p>
-    <!-- <div>status: {{ bisy }}</div> -->
     <div class="wrapper">
       <div class="lpanel">
         <p class="headers">Virtual machines:</p>
@@ -43,14 +47,13 @@
 <script>
 import axios from "axios";
 
-// let bisy = false
 export default {
   name: "startVM",
   data() {
     return {
       all_cfg: {},
-      // free_cfg: [],
-      busy_cfg: {},
+      free_cfg: [],
+      busy_cfg: [],
       picked: "",
       snaps: [],
       snapshot: "",
@@ -65,21 +68,11 @@ export default {
     showRes: function() {
       return this.picked && this.snapshot;
     },
-    free_cfg: function() {
-      console.log("free_cfg")
-      // let keys = Object.keys(this.all_cfg)
-      // console.log(keys)
-      // console.log(this.all_cfg["Windows 10 x64"].get('status'))
-      // for (let i in keys) {
-      //   console.log(this.all_cfg[i]["status"])
-      // }
-
-      // return Object.keys(this.all_cfg).filter(function(i)  {return this.all_cfg[i]["status"] == "free"})
-      return ["111", "222"]
+    busy: function() {
+      return this.busy_cfg.length > 0
     }
   },   
     
-  
   methods: {
     clearSn() {
       this.snapshot = "";
@@ -88,15 +81,10 @@ export default {
   mounted: function() {
     console.log("mounted");
     axios.get("http://rum-cherezov-dt:5000/api/cfg").then((response) => {
-      // console.log(response.data);
       this.all_cfg = response.data
       let keys = Object.keys(this.all_cfg)
-       keys.forEach(i => console.log(this.all_cfg[i]['status']))
-      // console.log(this.all_cfg["Windows 10 x64"]['status'])
-      // Object.keys(this.all_cfg).forEach(function(i) {console.log(this.all_cfg[i])})
-      // Object.keys(this.all_cfg).forEach(function(i) {if (this.all_cfg[i]["status"] == "free") {this.free_cfg.push(i)}})      
+       keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
     });
-    
   },
 };
 </script>
@@ -125,5 +113,13 @@ export default {
 }
 .headers {
   text-decoration: underline;
+}
+.busy {
+  color:red;
+  width: 250px;
+  margin: auto;
+  text-align: left;
+  padding-left: 60px;
+  list-style: none;
 }
 </style>
