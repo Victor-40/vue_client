@@ -43,6 +43,7 @@
 
     <b-modal v-model="modalShowOk" :ok-only=true :hide-header=true @ok="upd" :no-close-on-backdrop=true>
       <p class="my-4">{{serverResponse}}</p>
+      <p class="my-4">Откликается на имя <span class="selected">{{userHint}}</span></p>
     </b-modal>
     <b-modal v-model="modalShowErr" :ok-only=true :hide-header=true @ok="upd">
       <p class="my-4">Error</p>
@@ -68,6 +69,7 @@ export default {
       modalShowOk: false,
       modalShowErr: false,
       serverResponse: '',
+      // userHint: '',
 
     };
   },
@@ -81,6 +83,23 @@ export default {
     },
     busy: function() {
       return this.busy_cfg.length > 0
+    },
+    userHint: function() {
+      let cfgDct = {
+        "Windows 10 x64": "vm-win10",
+        "Windows 10 x64 German": "vm-win10-ger",
+        "Windows 10 x64 Turkish": "vm-win10-tur",
+        "Windows 7 x64": "vm-win7",
+        "Windows 7 x64 Chi": "vm-win7-chi",
+        "Windows 7 x64 French": "vm-win7-fre",
+        "Windows 7 x64 Italian": "vm-win7-ita",
+        "Windows 7 x64 Jap new": "vm-win7-jap",
+        "Windows 7 x64 Rus": "vm-win7-rus",
+        "Windows 8 x64": "vm-win8",
+        "Windows 8 x64 German": "vm-win8-ger"
+
+      }
+      return cfgDct[this.picked]
     }
   },   
     
