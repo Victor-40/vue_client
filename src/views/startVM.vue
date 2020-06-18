@@ -41,13 +41,12 @@
       <b-button variant="outline-primary" @click="startVm">Запустить</b-button>
     </div>
 
-    <b-modal v-model="modalShowOk" :ok-only=true>
+    <b-modal v-model="modalShowOk" :ok-only=true :hide-header=true @ok="upd" :no-close-on-backdrop=true>
       <p class="my-4">{{serverResponse}}</p>
     </b-modal>
-    <b-modal v-model="modalShowErr" :ok-only=true>
+    <b-modal v-model="modalShowErr" :ok-only=true :hide-header=true @ok="upd">
       <p class="my-4">Error</p>
     </b-modal>
-    <button @click="upd">qq</button>
 
   </div>
 </template>
@@ -101,8 +100,15 @@ export default {
       console.log("this.updatePage")
       this.picked = ""
       this.snaps = []
-    }
+      this.free_cfg = []
+      this.busy_cfg = []
 
+      axios.get("http://rum-cherezov-dt:5000/api/cfg").then((response) => {
+        this.all_cfg = response.data
+        let keys = Object.keys(this.all_cfg)
+        keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
+      });
+    }
   },
   mounted: function() {
     console.log("mounted");
