@@ -1,5 +1,5 @@
 <template>
-  <div class="startvm">
+  <div class="startvm" >
     <h3>This is a Start VM page</h3>
     <div class="free" v-if="busy">
       <p>Занятые машины:</p>
@@ -38,8 +38,17 @@
       Выбрана конфигурация:
       <span class="selected">{{ picked }} - {{ snapshot }}</span>
       <br /><br />
-      <b-button variant="outline-primary">Запустить</b-button>
+      <b-button variant="outline-primary" @click="startVm">Запустить</b-button>
     </div>
+
+    <b-modal v-model="modalShowOk" :ok-only=true>
+      <p class="my-4">{{serverResponse}}</p>
+    </b-modal>
+    <b-modal v-model="modalShowErr" :ok-only=true>
+      <p class="my-4">Error</p>
+    </b-modal>
+    <button @click="upd">qq</button>
+
   </div>
 </template>
 
@@ -56,10 +65,14 @@ export default {
       picked: "",
       snaps: [],
       snapshot: "",
+      runPath: "http://rum-cherezov-dt:5000/api/startclear",
+      modalShowOk: false,
+      modalShowErr: false,
+      serverResponse: '',
+
     };
   },
-
-  props: { bisy: Boolean },
+  // props: { bisy: Boolean },
   computed: {
     snapList: function() {
       return this.picked ? this.all_cfg[this.picked]["snap"] : [];
@@ -76,6 +89,20 @@ export default {
     clearSn() {
       this.snapshot = "";
     },
+    startVm() {
+      let vm_cfg = {'vm': this.picked, 'snap': this.snapshot};
+      axios.post(this.runPath, vm_cfg).then(response=> {
+        console.log(response.data)
+        this.serverResponse = response.data
+        this.modalShowOk = true
+      })
+    },
+    upd() {
+      console.log("this.updatePage")
+      this.picked = ""
+      this.snaps = []
+    }
+
   },
   mounted: function() {
     console.log("mounted");

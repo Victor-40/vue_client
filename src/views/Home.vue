@@ -19,9 +19,10 @@ export default {
 
 <style>
 .home {
-  background-image: url("./bugs.jpg");
+  /*background-image: url("./bugs.jpg");*/
   height: 100vh;
   background-size: contain;
   background-repeat: no-repeat;
+  padding-top: 30px;
 }
 </style>

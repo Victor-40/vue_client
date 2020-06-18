@@ -23,11 +23,10 @@ export default {
   font-size: 48px;
 }
 .container {
-  width: 90wh;
-  color: aquamarine;
+  width: 90%;
+  /*color: aquamarine;*/
   padding-left: 0;
   margin: auto;
-
   height: 100vh;
 }
 </style>

@@ -2,7 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> 
-      <router-link :to="{path: '/startvm', params: {bisy: true}}">StartVM</router-link>
+<!--      <router-link :to="{path: '/startvm', params: {bisy: true}}">StartVM</router-link>-->
+      <router-link :to="{path: '/startvm' }">StartVM</router-link>
     </div>
     <div class="main">
       <router-view />
