@@ -45,9 +45,11 @@
       <p class="my-4">{{serverResponse}}</p>
       <p class="my-4">Откликается на имя <span class="selected">{{userHint}}</span></p>
     </b-modal>
-    <b-modal v-model="modalShowErr" :ok-only=true :hide-header=true @ok="upd">
-      <p class="my-4">Error</p>
+    <b-modal v-model="modalShowErr" :ok-only=true :hide-header=true @ok="upd" :no-close-on-backdrop=true>
+      <p class="my-err">{{serverResponse}}</p>
     </b-modal>
+
+    <i class="fas fa-sad-tear"></i>
 
   </div>
 </template>
@@ -65,7 +67,7 @@ export default {
       picked: "",
       snaps: [],
       snapshot: "",
-      runPath: "http://rum-cherezov-dt:5000/api/startclear",
+      runPath: "http://rum-cherezov-dt:5001/api/startclear",
       modalShowOk: false,
       modalShowErr: false,
       serverResponse: '',
@@ -112,7 +114,15 @@ export default {
       axios.post(this.runPath, vm_cfg).then(response=> {
         console.log(response.data)
         this.serverResponse = response.data
-        this.modalShowOk = true
+        if (this.serverResponse.startsWith('VM')) {
+          console.log('ok', this.serverResponse)
+          this.modalShowOk = true
+        } else {
+          console.log('err', this.serverResponse)
+          this.modalShowErr = true
+          this.serverResponse = "Что-то пошло не так. Возможно машина уже занята"
+        }
+
       })
     },
     upd() {
@@ -122,7 +132,7 @@ export default {
       this.free_cfg = []
       this.busy_cfg = []
 
-      axios.get("http://rum-cherezov-dt:5000/api/cfg").then((response) => {
+      axios.get("http://rum-cherezov-dt:5001/api/cfg").then((response) => {
         this.all_cfg = response.data
         let keys = Object.keys(this.all_cfg)
         keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
@@ -131,7 +141,7 @@ export default {
   },
   mounted: function() {
     console.log("mounted");
-    axios.get("http://rum-cherezov-dt:5000/api/cfg").then((response) => {
+    axios.get("http://rum-cherezov-dt:5001/api/cfg").then((response) => {
       this.all_cfg = response.data
       let keys = Object.keys(this.all_cfg)
        keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
@@ -149,7 +159,7 @@ export default {
 .rpanel {
   margin: 10px 40px 10px;
   text-align: left;
-  padding: 10px 0 0 0px;
+  padding: 10px 0 0 0;
   font-weight: 500;
 }
 /* .element {
@@ -172,5 +182,12 @@ export default {
   text-align: left;
   padding-left: 60px;
   list-style: none;
+}
+.my-4 {
+  font-size: 18px;
+}
+.my-err {
+  font-size: 18px;
+  color: red;
 }
 </style>
