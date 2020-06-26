@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/">Home</router-link> 
 <!--      <router-link :to="{path: '/startvm', params: {bisy: true}}">StartVM</router-link>-->
-      <router-link :to="{path: '/startvm' }">StartVM</router-link>
+      <router-link :to="{path: '/startvm' }">Start VM</router-link>
+      <router-link :to="{path: '/starttestset' }">Start Testset</router-link>
     </div>
     <div class="main">
       <router-view />
