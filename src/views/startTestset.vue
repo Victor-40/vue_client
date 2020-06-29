@@ -67,25 +67,53 @@
           <b-button variant="outline-primary" @click="selectedLang = []">Unselect</b-button>
         </b-col>
       </b-row>
-    </b-container>
-    <hr>
-    <div>{{selectedProd}}</div>
-    <div>{{selectedWin}}</div>
-    <div>{{selectedLang}}</div>
+      <hr>
+      <b-row class="text-left">
+        <b-col>
+          <b-button variant="outline-primary" @click="findSetups">Find setups</b-button>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col class="myfont">
+          {{countSetups}} Setups(s) was founded
+        </b-col>
+      </b-row>
+      <b-row class="text-left">
+        <b-col>
+          <b-button variant="outline-primary" @click="findSetups">make XLS config</b-button>
+        </b-col>
+      </b-row>
+      <b-row >
+        <b-col class="myfont">
+          {{countSetups}} Configuration(s) was added to XLS config
+        </b-col>
+      </b-row>
+      <b-row class="text-left">
+        <b-col>
+          <b-button variant="outline-primary" @click="findSetups">start Testset</b-button>
+        </b-col>
+      </b-row>
 
+    </b-container>
+    <br>
+    <br>
+    <br>
+
+    {{buildTag}} <br>
+    {{buildTagClear}}
 
   </div>
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "startTestset",
   data() {
     return {
       buildTag: '',
-      buildNum: '',
+      // buildNum: '',
       selectedProd: ["CFW", "EFD.LAB", "EFD.NX", "EFD.PRO", "EFD.SE", "EFD.V5"],
       optionsProd: [
         { text: 'CFW', value: 'CFW'},
@@ -119,12 +147,41 @@ export default {
         { text: 'Japanese', value: 'Japanese'},
         { text: 'Russian', value: 'Russian'},
         { text: 'Turkish', value: 'Turkish'},
-      ]
+      ],
+      countSetups: 0,
+      setupParams: {},
+      vs2017: false,
+      subdir: '',
+      respCfg: {},
     }
   },
 
   methods: {
+    findSetups() {
+      const path = "http://rum-cherezov-dt:5001/api/findsetups";
+      // showParam = true;
+      this.setupParams.build = this.buildNum;
+      this.setupParams.tag = this.buildTagClear;
+      this.setupParams.subdir = this.subdir;
+      this.setupParams.products = this.selectedProd;
+      this.setupParams.vs2017 = this.vs2017;
 
+      axios.post(path, this.setupParams).then(response => {
+        this.respCfg = response.data;
+        // console.log( this.respCfg );
+        this.countSetups = this.respCfg.length;
+      });
+
+    }
+
+  },
+  computed: {
+    buildTagClear() {
+      return this.buildTag.replace("git--", "")
+    },
+    buildNum() {
+      return this.buildTagClear.match(/\.(\d\d\d\d)_/) ? this.buildTagClear.match(/\.(\d\d\d\d)_/)[1] : "";
+    }
   },
   mounted: function() {
 
@@ -132,6 +189,9 @@ export default {
 }
 </script>
 <style>
+  .myfont {
+    font-size: 18px;
+  }
   .la {
     text-align: left;
     font-size: 18px;
