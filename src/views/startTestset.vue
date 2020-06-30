@@ -4,15 +4,11 @@
 
     <b-container class="bv-example-row">
       <b-row class="text-center">
-        <b-col cols="5" class="mb-4 mt-4">
-            <b-form-input v-model="buildTag" placeholder="Enter build tag" trim></b-form-input>
+        <b-col cols="8" class="mb-4 mt-4">
+            <b-form-input v-model="dirName" placeholder="Enter setup directory name" trim></b-form-input>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col cols="2" class="mb-4">
-            <b-form-input v-model="buildNum" placeholder="Enter build number" trim></b-form-input>
-        </b-col>
-      </b-row>
+
       <b-row>
         <b-col cols="3" class="la">
           <b-form-group label="Select products:" class="ttl">
@@ -56,6 +52,7 @@
           </b-form-group>
         </b-col>
       </b-row>
+
       <b-row>
         <b-col cols="3" class="la">
           <b-button variant="outline-primary" @click="selectedProd = []">Unselect</b-button>
@@ -67,6 +64,21 @@
           <b-button variant="outline-primary" @click="selectedLang = []">Unselect</b-button>
         </b-col>
       </b-row>
+
+      <hr>
+      <b-row class="text-left">
+        <b-col  class="myfont">
+          <b-form-group label="Select subdirectory for search">
+            <b-form-radio-group
+                    id="radio-group-1"
+                    v-model="selectedSubDir"
+                    :options="options"
+                    name="radio-options"
+                    stacked
+            ></b-form-radio-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <hr>
       <b-row class="text-left">
         <b-col>
@@ -75,22 +87,32 @@
       </b-row>
       <b-row>
         <b-col class="myfont">
-          {{countSetups}} Setups(s) was founded
+          {{countSetups}} Setup(s) founded
+          <div v-if="showSpinner">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </div>
+
+          <div class="text-left">
+            <ul>
+              <li v-for="item in respCfg" :key="item">{{item}}</li>
+            </ul>
+          </div>
+
         </b-col>
       </b-row>
       <b-row class="text-left">
         <b-col>
-          <b-button variant="outline-primary" @click="findSetups">make XLS config</b-button>
+          <b-button variant="outline-primary" @click="makeXls">make XLS config</b-button>
         </b-col>
       </b-row>
       <b-row >
         <b-col class="myfont">
-          {{countSetups}} Configuration(s) was added to XLS config
+          {{cfgCount}} Configuration(s) added to XLS config
         </b-col>
       </b-row>
       <b-row class="text-left">
         <b-col>
-          <b-button variant="outline-primary" @click="findSetups">start Testset</b-button>
+          <b-button variant="outline-primary" @click="startTestset">start Testset</b-button>
         </b-col>
       </b-row>
 
@@ -99,20 +121,21 @@
     <br>
     <br>
 
-    {{buildTag}} <br>
-    {{buildTagClear}}
+
 
   </div>
 </template>
 
 <script>
 import axios from "axios";
+// let path = require("path")
 
 export default {
   name: "startTestset",
   data() {
     return {
-      buildTag: '',
+      apiPath: "http://rum-cherezov-dt:5001/api",
+      dirName: '',
       // buildNum: '',
       selectedProd: ["CFW", "EFD.LAB", "EFD.NX", "EFD.PRO", "EFD.SE", "EFD.V5"],
       optionsProd: [
@@ -148,44 +171,71 @@ export default {
         { text: 'Russian', value: 'Russian'},
         { text: 'Turkish', value: 'Turkish'},
       ],
+      showSpinner: false,
+      fullCfg: [],
+      cfgCount: 0,
       countSetups: 0,
       setupParams: {},
       vs2017: false,
-      subdir: '',
       respCfg: {},
+      selectedSubDir: '',
+      options: [
+        { text: '\\', value: '' },
+        { text: '_Internal', value: '_Internal' },
+        { text: '_Main', value: '_Main'}
+
+      ]
     }
   },
 
   methods: {
     findSetups() {
-      const path = "http://rum-cherezov-dt:5001/api/findsetups";
+      // let pathSetup = path.join(this.apiPath, "findsetups");
+      const pathSetup = this.apiPath + '/' + 'findsetups';
+      console.log(pathSetup)
       // showParam = true;
-      this.setupParams.build = this.buildNum;
-      this.setupParams.tag = this.buildTagClear;
-      this.setupParams.subdir = this.subdir;
+      this.setupParams.dirname = this.dirName;
+      // this.setupParams.tag = this.buildTagClear;
+      this.setupParams.subdir = this.selectedSubDir;
       this.setupParams.products = this.selectedProd;
       this.setupParams.vs2017 = this.vs2017;
 
-      axios.post(path, this.setupParams).then(response => {
+      this.showSpinner = true;
+      axios.post(pathSetup, this.setupParams).then(response => {
+        this.showSpinner = false;
         this.respCfg = response.data;
         // console.log( this.respCfg );
         this.countSetups = this.respCfg.length;
+
       });
 
-    }
-
-  },
-  computed: {
-    buildTagClear() {
-      return this.buildTag.replace("git--", "")
     },
-    buildNum() {
-      return this.buildTagClear.match(/\.(\d\d\d\d)_/) ? this.buildTagClear.match(/\.(\d\d\d\d)_/)[1] : "";
+    makeXls() {
+      // const path = "http://rum-cherezov-dt:5001/api/makexls";
+      const pathXls = this.apiPath + '/' + 'makexls';
+      axios
+              .post(pathXls, this.respCfg)
+              .then(res => {
+                this.fullCfg = res.data;
+                this.cfgCount = this.fullCfg.length;
+              })
+              .catch(error => {
+                // eslint-disable-next-line
+                console.error(error);
+              });
+    },
+    startTestset() {
+      // const path = "http://rum-cherezov-dt:5001/api/start_testset";
+      const pathStart = this.apiPath + '/' + 'start_testset';
+      axios
+          .get(pathStart)
+          .then(response  => {
+            console.log(response.data);
+          })
     }
-  },
-  mounted: function() {
 
-  },
+  }
+
 }
 </script>
 <style>
