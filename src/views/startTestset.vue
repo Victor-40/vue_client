@@ -80,6 +80,7 @@
         </b-col>
       </b-row>
       <hr>
+      <div v-show="dirName">
       <b-row class="text-left">
         <b-col>
           <b-button variant="outline-primary" @click="findSetups">Find setups</b-button>
@@ -110,11 +111,15 @@
           {{cfgCount}} Configuration(s) added to XLS config
         </b-col>
       </b-row>
+      <div v-if="showSpinnerXls">
+        <b-spinner variant="primary" label="Spinning"></b-spinner>
+      </div>
       <b-row class="text-left">
         <b-col>
           <b-button variant="outline-primary" @click="startTestset">start Testset</b-button>
         </b-col>
       </b-row>
+      </div>
 
     </b-container>
     <br>
@@ -136,7 +141,6 @@ export default {
     return {
       apiPath: "http://rum-cherezov-dt:5001/api",
       dirName: '',
-      // buildNum: '',
       selectedProd: ["CFW", "EFD.LAB", "EFD.NX", "EFD.PRO", "EFD.SE", "EFD.V5"],
       optionsProd: [
         { text: 'CFW', value: 'CFW'},
@@ -146,11 +150,11 @@ export default {
         { text: 'EFD.SE', value: 'EFD.SE' },
         { text: 'EFD.V5', value: 'EFD.V5' }],
 
-      selectedWin: ["win10", "win8", "win7"],
+      selectedWin: ["10", "8", "7"],
       optionsWin: [
-        { text: 'Windows 10', value: 'win10'},
-        { text: 'Windows 8', value: 'win8' },
-        { text: 'Windows 7', value: 'win7' }
+        { text: 'Windows 10', value: '10'},
+        { text: 'Windows 8', value: '8' },
+        { text: 'Windows 7', value: '7' }
       ],
       selectedLang: [
         "English",
@@ -172,12 +176,14 @@ export default {
         { text: 'Turkish', value: 'Turkish'},
       ],
       showSpinner: false,
+      showSpinnerXls: false,
       fullCfg: [],
       cfgCount: 0,
       countSetups: 0,
       setupParams: {},
       vs2017: false,
       respCfg: {},
+      // forXls: {},
       selectedSubDir: '',
       options: [
         { text: '\\', value: '' },
@@ -192,7 +198,7 @@ export default {
     findSetups() {
       // let pathSetup = path.join(this.apiPath, "findsetups");
       const pathSetup = this.apiPath + '/' + 'findsetups';
-      console.log(pathSetup)
+      // console.log(pathSetup)
       // showParam = true;
       this.setupParams.dirname = this.dirName;
       // this.setupParams.tag = this.buildTagClear;
@@ -201,6 +207,7 @@ export default {
       this.setupParams.vs2017 = this.vs2017;
 
       this.showSpinner = true;
+      this.cfgCount =0;
       axios.post(pathSetup, this.setupParams).then(response => {
         this.showSpinner = false;
         this.respCfg = response.data;
@@ -213,9 +220,12 @@ export default {
     makeXls() {
       // const path = "http://rum-cherezov-dt:5001/api/makexls";
       const pathXls = this.apiPath + '/' + 'makexls';
+      const paramsXls = {setups: this.respCfg, lang: this.selectedLang, win: this.selectedWin}
+      this.showSpinnerXls = true;
       axios
-              .post(pathXls, this.respCfg)
+              .post(pathXls, paramsXls)
               .then(res => {
+                this.showSpinnerXls = false;
                 this.fullCfg = res.data;
                 this.cfgCount = this.fullCfg.length;
               })
@@ -225,7 +235,6 @@ export default {
               });
     },
     startTestset() {
-      // const path = "http://rum-cherezov-dt:5001/api/start_testset";
       const pathStart = this.apiPath + '/' + 'start_testset';
       axios
           .get(pathStart)
@@ -233,9 +242,7 @@ export default {
             console.log(response.data);
           })
     }
-
   }
-
 }
 </script>
 <style>
