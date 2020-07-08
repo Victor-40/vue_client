@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import {HTTP} from '@/services/http-common'
 
 export default {
   name: "startVM",
@@ -68,7 +68,6 @@ export default {
       picked: "",
       snaps: [],
       snapshot: "",
-      runPath: "http://rum-cherezov-dt:5001/api/startclear",
       modalShowOk: false,
       modalShowErr: false,
       serverResponse: '',
@@ -115,7 +114,7 @@ export default {
     },
     startVm() {
       let vm_cfg = {'vm': this.picked, 'snap': this.snapshot};
-      axios.post(this.runPath, vm_cfg).then(response=> {
+      HTTP.post(`startclear`, vm_cfg).then(response=> {
         console.log(response.data)
         this.serverResponse = response.data
         if (this.serverResponse.startsWith('VM')) {
@@ -136,7 +135,7 @@ export default {
       this.free_cfg = []
       this.busy_cfg = []
 
-      axios.get("http://rum-cherezov-dt:5001/api/cfg").then((response) => {
+      HTTP.get(`cfg`).then((response) => {
         this.all_cfg = response.data
         let keys = Object.keys(this.all_cfg)
         keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
@@ -145,7 +144,7 @@ export default {
   },
   mounted: function() {
     console.log("mounted");
-    axios.get("http://rum-cherezov-dt:5001/api/cfg").then((response) => {
+    HTTP.get(`cfg`).then((response) => {
       this.all_cfg = response.data
       let keys = Object.keys(this.all_cfg)
        keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))

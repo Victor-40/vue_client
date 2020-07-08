@@ -126,20 +126,16 @@
     <br>
     <br>
 
-
-
   </div>
 </template>
 
 <script>
-import axios from "axios";
-// let path = require("path")
+import {HTTP} from '@/services/http-common'
 
 export default {
   name: "startTestset",
   data() {
     return {
-      apiPath: "http://rum-cherezov-dt:5001/api",
       dirName: '',
       selectedProd: ["CFW", "EFD.LAB", "EFD.NX", "EFD.PRO", "EFD.SE", "EFD.V5"],
       optionsProd: [
@@ -196,8 +192,6 @@ export default {
 
   methods: {
     findSetups() {
-      // let pathSetup = path.join(this.apiPath, "findsetups");
-      const pathSetup = this.apiPath + '/' + 'findsetups';
       // console.log(pathSetup)
       // showParam = true;
       this.setupParams.dirname = this.dirName;
@@ -208,22 +202,17 @@ export default {
 
       this.showSpinner = true;
       this.cfgCount =0;
-      axios.post(pathSetup, this.setupParams).then(response => {
+      HTTP.post(`findsetups`, this.setupParams).then(response => {
         this.showSpinner = false;
         this.respCfg = response.data;
         // console.log( this.respCfg );
         this.countSetups = this.respCfg.length;
-
       });
-
     },
     makeXls() {
-      // const path = "http://rum-cherezov-dt:5001/api/makexls";
-      const pathXls = this.apiPath + '/' + 'makexls';
       const paramsXls = {setups: this.respCfg, lang: this.selectedLang, win: this.selectedWin}
       this.showSpinnerXls = true;
-      axios
-              .post(pathXls, paramsXls)
+      HTTP.post(`makexls`, paramsXls)
               .then(res => {
                 this.showSpinnerXls = false;
                 this.fullCfg = res.data;
@@ -235,9 +224,7 @@ export default {
               });
     },
     startTestset() {
-      const pathStart = this.apiPath + '/' + 'start_testset';
-      axios
-          .get(pathStart)
+      HTTP.get(`start_testset`)
           .then(response  => {
             console.log(response.data);
           })
