@@ -44,6 +44,7 @@
     <b-modal v-model="modalShowOk" :ok-only=true :hide-header=true @ok="upd" :no-close-on-backdrop=true>
       <p class="my-4">{{serverResponse}}</p>
       <p class="my-4">Откликается на имя <span class="selected">{{userHint}}</span></p>
+
     </b-modal>
     <b-modal v-model="modalShowErr" :ok-only=true :hide-header=true @ok="upd" :no-close-on-backdrop=true>
       <p class="my-err">{{serverResponse}}</p>
@@ -91,6 +92,7 @@ export default {
         "Windows 10 x64": "vm-win10",
         "Windows 10 x64 German": "vm-win10-ger",
         "Windows 10 x64 Turkish": "vm-win10-tur",
+        "Windows 10 x64 Jap": "vm-win10-jap",
         "Windows 7 x64": "vm-win7",
         "Windows 7 x64 Chi": "vm-win7-chi",
         "Windows 7 x64 French": "vm-win7-fre",
@@ -98,7 +100,9 @@ export default {
         "Windows 7 x64 Jap new": "vm-win7-jap",
         "Windows 7 x64 Rus": "vm-win7-rus",
         "Windows 8 x64": "vm-win8",
-        "Windows 8 x64 German": "vm-win8-ger"
+        "Windows 8 x64 German": "vm-win8-ger",
+        "Windows Server 2012 R2": "vm-win2012",
+        "TC1123": "AEWIC1015A"
 
       }
       return cfgDct[this.picked]
@@ -159,8 +163,10 @@ export default {
 .rpanel {
   margin: 10px 40px 10px;
   text-align: left;
-  padding: 10px 0 0 0;
+  padding: 10px 0 0 50px;
   font-weight: 500;
+  width:270px;
+  /*border-style: solid;*/
 }
 /* .element {
   margin-bottom: 5px;

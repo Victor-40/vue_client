@@ -256,5 +256,8 @@ export default {
   .ttl {
     text-decoration: underline;
   }
+  b-container {
+    margin-left: 1000px;
+  }
 </style>
 
