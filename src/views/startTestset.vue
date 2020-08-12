@@ -78,6 +78,22 @@
             ></b-form-radio-group>
           </b-form-group>
         </b-col>
+        <b-col  class="myfont">
+          <b-form-input  v-b-tooltip title="Репорт будет в каталоге вида <build>-2020_2, <build>-dev и т.д"
+                         v-model="reportId" placeholder="Enter report directory id (for example: 2020_2, dev or custom)" trim>
+          </b-form-input>
+        </b-col>
+      </b-row >
+      <br>
+      <b-row class="text-left">
+         <b-col>
+           <b-form-checkbox
+             v-model="vs2019"
+             name="checkbox-1"
+            >  VS 2019
+           </b-form-checkbox>
+
+         </b-col>
       </b-row>
       <hr>
       <div v-show="dirName">
@@ -137,6 +153,7 @@ export default {
   data() {
     return {
       dirName: '',
+      reportId: '',
       selectedProd: ["CFW", "EFD.LAB", "EFD.NX", "EFD.PRO", "EFD.SE", "EFD.V5"],
       optionsProd: [
         { text: 'CFW', value: 'CFW'},
@@ -177,7 +194,7 @@ export default {
       cfgCount: 0,
       countSetups: 0,
       setupParams: {},
-      vs2017: false,
+      vs2019: false,
       respCfg: {},
       // forXls: {},
       selectedSubDir: '',
@@ -195,10 +212,9 @@ export default {
       // console.log(pathSetup)
       // showParam = true;
       this.setupParams.dirname = this.dirName;
-      // this.setupParams.tag = this.buildTagClear;
       this.setupParams.subdir = this.selectedSubDir;
       this.setupParams.products = this.selectedProd;
-      this.setupParams.vs2017 = this.vs2017;
+      this.setupParams.vs2019 = this.vs2019;
 
       this.showSpinner = true;
       this.cfgCount =0;
@@ -210,7 +226,7 @@ export default {
       });
     },
     makeXls() {
-      const paramsXls = {setups: this.respCfg, lang: this.selectedLang, win: this.selectedWin}
+      const paramsXls = {setups: this.respCfg, lang: this.selectedLang, win: this.selectedWin, report: this.reportId}
       this.showSpinnerXls = true;
       HTTP.post(`makexls`, paramsXls)
               .then(res => {
