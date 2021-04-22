@@ -92,6 +92,7 @@ export default {
         "Windows 10 x64 German": "vm-win10-ger",
         "Windows 10 x64 Turkish": "vm-win10-tur",
         "Windows 10 x64 Jap": "vm-win10-jap",
+        "Windows 10 x64 Rus": "vm-win10-rus",
         "Windows 7 x64": "vm-win7",
         "Windows 7 x64 Chi": "vm-win7-chi",
         "Windows 7 x64 French": "vm-win7-fre",
@@ -101,7 +102,9 @@ export default {
         "Windows 8 x64": "vm-win8",
         "Windows 8 x64 German": "vm-win8-ger",
         "Windows Server 2012 R2": "vm-win2012",
-        "TC1123": "AEWIC1015A"
+        "TC1123": "AEWIC1015A",
+        "Windows Server 2016": "vm-Srv2016",
+        "Windows Server 2016 AW": "PLM-TEST"
 
       }
       return cfgDct[this.picked]
