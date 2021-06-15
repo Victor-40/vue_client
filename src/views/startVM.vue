@@ -89,6 +89,7 @@ export default {
     userHint: function() {
       let cfgDct = {
         "Windows 10 x64": "vm-win10",
+        "Windows 10 x64-1": "vm-win10-1",
         "Windows 10 x64 German": "vm-win10-ger",
         "Windows 10 x64 Turkish": "vm-win10-tur",
         "Windows 10 x64 Jap": "vm-win10-jap",
