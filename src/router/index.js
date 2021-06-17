@@ -1,18 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import startTestset from '../views/startTestset.vue'
 
 Vue.use(VueRouter)
 
   const routes = [
-  {
+   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/startvm',
     name: 'startvm',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

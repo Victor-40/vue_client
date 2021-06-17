@@ -1,15 +1,15 @@
 <template>
   <div class="startvm" >
-    <h3>This is a Start VM page</h3>
+<!--    <h3>This is a Start VM page</h3>-->
     <div class="free" v-if="busy">
-      <p>Занятые машины:</p>
+      <p class="headers">Занятые машины:</p>
     <ul class="busy">
       <li v-for="item in busy_cfg" :key="item">{{item}}</li>
     </ul>
      </div>
     <div v-else>Вам повезло, все машины сейчас свободны</div>
     <br />
-    <p>Выберите свободную машину и снэпшот</p>
+    <p class="headers">Выберите свободную машину и снэпшот</p>
     <div class="wrapper">
       <div class="lpanel">
         <p class="headers">Virtual machines:</p>
@@ -19,9 +19,21 @@
           class="element"
           @change="clearSn"
         >
-          <b-form-radio :id="item" :value="item" v-model="picked">{{
+          <b-form-radio :id="item" :value="item" v-model="picked_vm">{{
             item
           }}</b-form-radio>
+        </div>
+      </div>
+      <div class="rpanel">
+        <p class="headers">CAD family:</p>
+        <div v-for="item in cadList"
+             :key="item"
+             class="element"
+             @change="clearSn"
+        >
+          <b-form-radio :id="item" :value="item" v-model="picked_family">
+            {{ item }}</b-form-radio
+          >
         </div>
       </div>
       <div class="rpanel">
@@ -36,7 +48,7 @@
     <div v-if="showRes">
       <hr />
       Выбрана конфигурация:
-      <span class="selected">{{ picked }} - {{ snapshot }}</span>
+      <span class="selected">{{ picked_vm }} - {{ snapshot }}</span>
       <br /><br />
       <b-button variant="outline-primary" @click="startVm">Запустить</b-button>
     </div>
@@ -65,8 +77,10 @@ export default {
       all_cfg: {},
       free_cfg: [],
       busy_cfg: [],
-      picked: "",
+      picked_vm: "",
+      picked_family: "",
       snaps: [],
+      cad_family: "",
       snapshot: "",
       modalShowOk: false,
       modalShowErr: false,
@@ -78,10 +92,14 @@ export default {
   // props: { bisy: Boolean },
   computed: {
     snapList: function() {
-      return this.picked ? this.all_cfg[this.picked]["snap"] : [];
+
+      return this.picked_family ? this.all_cfg[this.picked_vm]["cad_family"][this.picked_family] : [];
+    },
+    cadList: function() {
+      return this.picked_vm ? Object.keys(this.all_cfg[this.picked_vm]["cad_family"]) : [];
     },
     showRes: function() {
-      return this.picked && this.snapshot;
+      return this.picked_vm &&  this.picked_family && this.snapshot;
     },
     busy: function() {
       return this.busy_cfg.length > 0
@@ -108,7 +126,7 @@ export default {
         "Windows Server 2016 AW": "PLM-TEST"
 
       }
-      return cfgDct[this.picked]
+      return cfgDct[this.picked_vm]
     }
   },   
     
@@ -117,7 +135,7 @@ export default {
       this.snapshot = "";
     },
     startVm() {
-      let vm_cfg = {'vm': this.picked, 'snap': this.snapshot};
+      let vm_cfg = {'vm': this.picked_vm, 'snap': this.snapshot};
       HTTP.post(`startclear`, vm_cfg).then(response=> {
         console.log(response.data)
         this.serverResponse = response.data
@@ -134,7 +152,7 @@ export default {
     },
     upd() {
       console.log("this.updatePage")
-      this.picked = ""
+      this.picked_vm = ""
       this.snaps = []
       this.free_cfg = []
       this.busy_cfg = []
@@ -153,6 +171,7 @@ export default {
       let keys = Object.keys(this.all_cfg)
        keys.forEach(i => this.all_cfg[i]['status'] == "free" ? this.free_cfg.push(i) : this.busy_cfg.push(i))
     });
+
   },
 };
 </script>
